@@ -174,6 +174,7 @@ ServerRequest::addDetector('tablet', function ($request) {
 
     return $detector->isTablet();
 });
+
 //Plugin::load('chosen', ['routes' => true]);
 //
 //// Include bootstrap configuration/initializer file.
@@ -204,3 +205,4 @@ Type::build('timestamp')
 //Inflector::rules('irregular', ['red' => 'redlings']);
 //Inflector::rules('uninflected', ['dontinflectme']);
 //Inflector::rules('transliteration', ['/å/' => 'aa']);
+//Plugin::addPlugin(‘MailgunEmail’);

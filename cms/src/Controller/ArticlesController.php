@@ -153,8 +153,7 @@ class ArticlesController extends AppController
                 throw new Exception("Could not put contents.");
             }
             return true;
-        }
-        else {
+        }else{
             throw new Exception("No valid image provided with {$img}.");
         }
     }

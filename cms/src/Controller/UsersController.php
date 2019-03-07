@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller;
 use App\Controller\AppController;
-use Cake\Mailer\MailerAwareTrait;
+//use Cake\Mailer\MailerAwareTrait;
 use Cake\Routing\Router;
 use Cake\Mailer\Email;
 /**
@@ -13,7 +13,7 @@ use Cake\Mailer\Email;
  */
 class UsersController extends AppController
 {
-    use MailerAwareTrait;
+  //  use MailerAwareTrait;
     /**
      * Index method
      *
@@ -158,46 +158,45 @@ class UsersController extends AppController
                 $this->Flash->error('Email address does not exist. Please try again');
             } else {
                 $passkey = uniqid();
-                $url = Router::Url(['controller' => 'users', 'action' => 'resetPassword'], true) . '/' . $passkey;
+                $url = Router::Url(['controller' => 'users', 'action' => 'resetpassword'], true) . '/' . $passkey;
                 $timeout = time() + DAY;
                  if ($this->Users->updateAll(['passkey' => $passkey, 'timeout' => $timeout], ['id' => $user->id])){
                     $this->sendResetEmail($url, $user);
                     $this->redirect(['action' => 'login']);
                 } else {
                     $this->Flash->error('Error saving reset passkey/timeout');
-                }
+                }   
             }
         }
     }
-    private function sendResetEmail($url, $user) {
+    private function sendResetEmail($url, $user) 
+    {   
         $email = new Email();
-        $email->template('resetpw');
-        $email->emailFormat('html');
-        $email->from('postmaster@sandbox9ed3063795a8487c8d0174abb2b0ef4e.mailgun.org');
-        pr($email);        
-//        exit('ex');
-        $email->to($user->email);
-        $email->subject('Reset your password');
-        $email->viewVars(['url' => $url]);
-         //pr($email);        exit('ex');
+        $email->transport('mailjet');
+        $email->from("mayuresh@agileconnects.com")
+                  ->template('resetpw')
+                  ->emailFormat('both')
+                  ->to($user->email)
+                  ->subject('Reset your password')
+                  ->viewVars(['url' => $url]);
         if ($email->send()) {
             $this->Flash->success(__('Check your email for your reset password link'));
         } else {
             $this->Flash->error(__('Error sending email: ') . $email->smtpError);
         }
     }
-    public function resetPassword($passkey = null)
+    public function resetpassword($passkey = null)
     {
-       if ($passkey) {
-            $query = $this->Users->find('all', ['conditions' => ['passkey' => $passkey, 'timeout >' => time()]]);
+       if ($passkey){
+            $query = $this->Users->find('all', ['conditions' => ['passkey' => $passkey]]);
             $user = $query->first();
-            if ($user) {
+            if ($user){
                 if (!empty($this->request->data)) {
                     // Clear passkey and timeout
                     $this->request->data['passkey'] = null;
                     $this->request->data['timeout'] = null;
                     $user = $this->Users->patchEntity($user, $this->request->data);
-                    if ($this->Users->save($user)) {
+                    if ($this->Users->save($user)){
                         $this->Flash->set(__('Your password has been updated.'));
                         return $this->redirect(array('action' => 'login'));
                     } else {
@@ -206,7 +205,7 @@ class UsersController extends AppController
                 }
             } else {
                 $this->Flash->error('Invalid or expired passkey. Please check your email or try again');
-                $this->redirect(['action' => 'password']);
+                $this->redirect(['action' => 'checkpassword']);
             }
             unset($user->password);
             $this->set(compact('user'));
