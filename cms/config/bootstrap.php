@@ -174,7 +174,10 @@ ServerRequest::addDetector('tablet', function ($request) {
 
     return $detector->isTablet();
 });
-
+//Plugin::load('chosen', ['routes' => true]);
+//
+//// Include bootstrap configuration/initializer file.
+//Plugin::load('chosen', ['bootstrap' => true]);
 /*
  * Enable immutable time objects in the ORM.
  *

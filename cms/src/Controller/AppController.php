@@ -71,7 +71,7 @@ class AppController extends Controller
 
         // Allow the display action so our PagesController
         // continues to work. Also enable the read only actions.
-        $this->Auth->allow(['display', 'view', 'index','tags', 'login', 'logout','add','edit','delete','register']);
+        $this->Auth->allow(['display', 'view', 'index','tags', 'login', 'logout','add','edit','delete','register','checkpassword']);
     }
 
         /*

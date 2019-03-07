@@ -15,6 +15,7 @@
                             <?= $this->Form->control('password') ?>
                             <?= $this->Form->button('Login') ?>
                             <?= $this->Html->link(__('Register User'), ['controller' => 'Users', 'action' => 'register']) ?>
+                            <?= $this->Html->link(__('Forgot Password'), ['controller' => 'Users', 'action' => 'checkpassword']) ?>
                             <?= $this->Form->end() ?>
                         </div>
                     </div>

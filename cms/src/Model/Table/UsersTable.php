@@ -85,6 +85,17 @@ class UsersTable extends Table
                     'message' => 'Sorry, password and confirm password does not matched'
                 ]
             );
+        $validator
+                ->requirePresence('gender','create')
+                ->allowEmptyString('gender', false);
+        $validator
+                ->requirePresence('city','create')
+                ->maxLength('city', 50)
+                ->allowEmptyString('city', false);
+        $validator
+                ->requirePresence('country','create')
+                 ->maxLength('country', 50)
+                ->allowEmptyString('country', false);
         return $validator;
     }
 

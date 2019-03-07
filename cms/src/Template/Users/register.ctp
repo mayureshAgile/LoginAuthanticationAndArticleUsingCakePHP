@@ -22,8 +22,17 @@
                                     <?php
                                         echo $this->Form->control('email');
                                         echo $this->Form->control('password');
-                                        echo $this->Form->control('cPassword');
-
+                                        echo $this->Form->control('cPassword',['type' => 'password']);
+                                        echo $this->Form->radio(
+                                            'gender',
+                                            [
+                                                ['value' => 'M', 'text' => 'Male'],
+                                                ['value' => 'F', 'text' => 'Female'],
+                                                ['value' => 'o', 'text' => 'Other'],
+                                            ]
+                                        );
+                                        echo $this->Form->control('city');
+                                        echo $this->Form->control('country');
                                     ?>
                                 </fieldset>
                                 <?= $this->Form->button(__('Submit')) ?>

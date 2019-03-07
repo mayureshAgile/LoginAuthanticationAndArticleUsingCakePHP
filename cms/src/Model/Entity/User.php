@@ -30,7 +30,9 @@ class User extends Entity
         'email' => true,
         'password' => true,
         'created' => true,
-        'modified' => true,
+        'gender' => true,
+        'city' => true,
+        'country' => true,
         'articles' => true
     ];
 
@@ -40,8 +42,12 @@ class User extends Entity
      * @var array
      */
     protected $_hidden = [
-        'password'
+        'password',
+        'cPassword'
     ];
+//    protected $_hidden = [
+//       
+//    ];
     protected function _setPassword($value)
     {
         if (strlen($value)) {
