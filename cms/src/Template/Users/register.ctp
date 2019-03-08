@@ -26,9 +26,9 @@
                                         echo $this->Form->radio(
                                             'gender',
                                             [
-                                                ['value' => 'M', 'text' => 'Male'],
-                                                ['value' => 'F', 'text' => 'Female'],
-                                                ['value' => 'o', 'text' => 'Other'],
+                                                ['value' => '1', 'text' => 'Male'],
+                                                ['value' => '2', 'text' => 'Female'],
+                                                ['value' => '3', 'text' => 'Other'],
                                             ]
                                         );
                                         echo $this->Form->control('city');

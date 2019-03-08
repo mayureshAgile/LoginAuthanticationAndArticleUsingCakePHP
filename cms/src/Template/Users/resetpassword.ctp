@@ -5,9 +5,8 @@
         <legend><?php echo __('Reset Password') ?>
     <?php
         echo $this->Form->control('password', ['required' => true, 'autofocus' => true]); ?>
-        <p class="helper">Passwords must be at least 8 characters and contain at least 1 number, 1 uppercase, 1 lowercase and 1 special character</p>
     <?php 
-        echo $this->Form->control('confirm_password', ['type' => 'password', 'required' => true]);
+        echo $this->Form->control('cPassword', ['type' => 'password', 'required' => true]);
     ?>
     </fieldset>
  	<?php echo $this->Form->button(__('Submit')); ?>
