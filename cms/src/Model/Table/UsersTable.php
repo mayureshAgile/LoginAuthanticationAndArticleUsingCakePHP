@@ -57,6 +57,14 @@ class UsersTable extends Table
         $validator
             ->integer('id')
             ->allowEmptyString('id', 'create');
+        $validator
+                ->requirePresence('firstname','create')
+                ->maxLength('firstname', 50)
+                ->allowEmptyString('firstname', false);
+        $validator
+                ->requirePresence('lastname','create')
+                ->maxLength('lastname', 50)
+                ->allowEmptyString('lastname', false);
 
         $validator
             ->email('email')

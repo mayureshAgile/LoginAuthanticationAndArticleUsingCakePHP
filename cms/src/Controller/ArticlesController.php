@@ -27,19 +27,45 @@ class ArticlesController extends AppController
     public function add()
     {
         $article = $this->Articles->newEntity();
-        if (!empty($this->request->data)) {
-            if (!empty($this->request->data['upload'])) {
-                $file = $this->request->data['upload']; //put the data into a var for easy use
-                //$ext = substr(strtolower(strrchr($file['name'], '.')), 1); //get the extension
-                $ext = pathinfo($file['name'], PATHINFO_EXTENSION); 
-                $arr_ext = array('jpg', 'jpeg', 'gif','png'); //set allowed extensions
-                $setNewFileName = time() . "_" . rand(000000, 999999);
-                //only process if the extension is valid
-                if (in_array($ext, $arr_ext)) {
-                    //do the actual uploading of the file. First arg is the tmp name, second arg is 
-                    //where we are putting it
-                    move_uploaded_file($file['tmp_name'], WWW_ROOT . 'upload/avatar/'. $setNewFileName . '.' . $ext);
+            if (!empty($this->request->data)) {
+                $article->ImageName = $this-> uploadImage($this->request->data['upload']);
+                $article->user_id = $this->Auth->user('id');
+                $getFormvalue = $this->Articles->patchEntity($article, $this->request->data);
+                if ($this->Articles->save($getFormvalue)) {
+                    $this->Flash->success('Your profile has been sucessfully updated.');
+                    return $this->redirect(['action' => 'index']);
+                }else{
+                    $this->Flash->error('Records not be saved. Please, try again.');
+                }
+        }
+        $tags = $this->Articles->Tags->find('list');
+        // Set tags to the view context
+        $this->set('tags', $tags);
+        $this->set('article', $article);
+    }
+     private function uploadImage($uploadDataArray){
+        if (!empty($uploadDataArray)) {
+            $file = $uploadDataArray; //put the data into a var for easy use
+            //$ext = substr(strtolower(strrchr($file['name'], '.')), 1); //get the extension
+            $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+            $mime_type = array(
+                 'image/png',
+                 'image/jpeg',
+                 'image/jpeg',
+                 'image/jpeg',
+                 'image/gif'
+            );
+          $arr_ext = mime_content_type(WWW_ROOT.'img/'.$file['name']);
+            //$arr_ext = array('jpg', 'jpeg', 'gif','png'); //set allowed extensions
+            $setNewFileName = time() . "_" . rand(000000, 999999);
+            //only process if the extension is valid
+            if (in_array( $arr_ext,$mime_type)) {
+                //do the actual uploading of the file. First arg is the tmp name, second arg is 
+                //where we are putting it
+                $return = move_uploaded_file($file['tmp_name'], WWW_ROOT . 'upload/avatar/'. $setNewFileName . '.' . $ext);
+                if($return==1){
                     //prepare the filename for database entry 
+                    $imageFileName = "";
                     $imageFileName = $setNewFileName . '.' . $ext;
                     list($width, $height) = getimagesize(WWW_ROOT . 'upload/avatar/'. $setNewFileName . '.' . $ext);
                    // $this->generateThumbnail($imageFileName, $width, $height);
@@ -52,24 +78,16 @@ class ArticlesController extends AppController
                     catch (Exception $e) {
                         echo $this->$e->getMessage();
                     }
+                }else{
+                    $this-> echo("Image does not move to the loaction");
                 }
             }
-            $article->user_id = $this->Auth->user('id');
-            $getFormvalue = $this->Articles->patchEntity($article, $this->request->data);
-            if (!empty($this->request->data['upload']['name'])){
-                    $getFormvalue->ImageName = $imageFileName;
-            }
-            if ($this->Articles->save($getFormvalue)) {
-                $this->Flash->success('Your profile has been sucessfully updated.');
-                return $this->redirect(['action' => 'index']);
-            }else{
-                $this->Flash->error('Records not be saved. Please, try again.');
-            }
         }
-        $tags = $this->Articles->Tags->find('list');
-        // Set tags to the view context
-        $this->set('tags', $tags);
-        $this->set('article', $article);
+//        if (!empty($uploadDataArray['name'])){
+//            $getFormvalue->ImageName = $imageFileName;
+//            pr($getFormvalue);exit('exit');
+//        }
+        return $imageFileName;
     }
     public function edit($slug)
     {

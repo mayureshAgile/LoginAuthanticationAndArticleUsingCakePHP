@@ -32,8 +32,8 @@ class MyNewMigration extends AbstractMigration
      */
     public function change()
     {
-	$table = $this->table('users');
-        $table->addColumn('gender', 'integer', ['after' => 'email'])
-              ->update();
+//	$table = $this->table('users');
+//        $table->addColumn('gender', 'integer', ['after' => 'email'])
+//              ->update();
     }
 }

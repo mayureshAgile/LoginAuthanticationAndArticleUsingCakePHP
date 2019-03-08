@@ -20,6 +20,8 @@
                                 <?= $this->Form->create($user) ?>
                                 <fieldset>
                                     <?php
+                                        echo $this->Form->control('firstname');
+                                        echo $this->Form->control('lastname');
                                         echo $this->Form->control('email');
                                         echo $this->Form->control('password');
                                         echo $this->Form->control('cPassword',['type' => 'password']);
