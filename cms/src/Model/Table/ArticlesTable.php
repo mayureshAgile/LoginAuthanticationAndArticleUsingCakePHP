@@ -26,6 +26,22 @@ class ArticlesTable extends Table
             $entity->slug = substr($sluggedTitle, 0, 191);
         }
     }
+    public function validationEdit(Validator $validator)
+    {
+      
+//        pr($validator);exit('exit');
+        $validator
+                ->allowEmptyString('title', false)
+                ->minLength('title', 10)
+                ->maxLength('title', 255)
+                ->allowEmptyString('body', false)
+                ->minLength('body', 10)
+                ->add('upload', 'custom', [
+                        'rule' => [$this, 'validationImage'],
+                        'message' => 'Image is required'
+                ]);
+        return $validator;
+    }
     public function validationDefault(Validator $validator)
     {
         $validator
@@ -34,7 +50,27 @@ class ArticlesTable extends Table
             ->maxLength('title', 255)
             ->allowEmptyString('body', false)
             ->minLength('body', 10);
+//            ->add('upload', 'custom', [
+//                'rule' => [$this, 'validationImage'],
+//                'message' => 'Image is required'
+//            ]);
         return $validator;
+    }
+    public function validationImage($check, array $context){
+        $mime_type = array(
+                 'image/png',
+                 'image/jpeg',
+                 'image/jpeg',
+                 'image/jpeg',
+                 'image/gif'
+        );
+       $arr_ext = mime_content_type(WWW_ROOT.'img/'.$check['name']);
+        if (in_array( $arr_ext,$mime_type)) {
+             $return = true;
+        }else{
+             $return = false;
+        }
+        return $return;
     }
     public function findTagged(Query $query, array $options)
     {
@@ -43,7 +79,6 @@ class ArticlesTable extends Table
             'Articles.body', 'Articles.published', 'Articles.created',
             'Articles.slug', 'Articles.ImageName',
         ];
-
         $query = $query
             ->select($columns)
             ->distinct($columns);
@@ -57,7 +92,6 @@ class ArticlesTable extends Table
             $query->innerJoinWith('Tags')
                 ->where(['Tags.title IN' => $options['tags']]);
         }
-
         return $query->group(['Articles.id']);
     }
     

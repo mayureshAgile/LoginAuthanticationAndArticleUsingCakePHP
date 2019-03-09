@@ -43,7 +43,7 @@ class ArticlesController extends AppController
         $this->set('tags', $tags);
         $this->set('article', $article);
     }
-     private function uploadImage($uploadDataArray){
+     public function uploadImage($uploadDataArray){
         if (!empty($uploadDataArray)) {
             $file = $uploadDataArray; //put the data into a var for easy use
             //$ext = substr(strtolower(strrchr($file['name'], '.')), 1); //get the extension
@@ -79,7 +79,7 @@ class ArticlesController extends AppController
                         echo $this->$e->getMessage();
                     }
                 }else{
-                    $this-> echo("Image does not move to the loaction");
+                    $this-> echo("Image does not move to the location");
                 }
             }
         }
@@ -99,7 +99,8 @@ class ArticlesController extends AppController
         if ($this->request->is(['post', 'put'])) {
             $this->Articles->patchEntity($article, $this->request->getData(), [
                 // Added: Disable modification of user_id.
-                'accessibleFields' => ['user_id' => false]
+                'accessibleFields' => ['user_id' => false],
+                'validate'=>'Edit'
             ]);
             if ($this->Articles->save($article)) {
                 $this->Flash->success(__('Your article has been updated.'));
@@ -117,7 +118,7 @@ class ArticlesController extends AppController
     {
         $this->request->allowMethod(['post', 'delete']);
         $article = $this->Articles->findBySlug($slug)->firstOrFail();
-        if ($this->Articles->delete($article)) {
+        if($this->Articles->delete($article)) {
             $this->Flash->success(__('The {0} article has been deleted.', $article->title));
             return $this->redirect(['action' => 'index']);
         }
