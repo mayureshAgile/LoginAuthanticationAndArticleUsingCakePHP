@@ -7,6 +7,7 @@ use Cake\Utility\Text;
 use Cake\ORM\Query;
 class ArticlesTable extends Table
 {
+    public $fixtures = ['app.Articles'];
     public function initialize(array $config)
     {
         $this->addBehavior('Timestamp');
@@ -17,6 +18,10 @@ class ArticlesTable extends Table
     }
     public function beforeSave($event, $entity, $options)
     {
+//        pr($event);
+//        pr($entity);
+//        pr($options);        
+//        exit("ex");
         if ($entity->tag_string) {
             $entity->tags = $this->_buildTags($entity->tag_string);
         }
@@ -28,8 +33,6 @@ class ArticlesTable extends Table
     }
     public function validationEdit(Validator $validator)
     {
-      
-//        pr($validator);exit('exit');
         $validator
                 ->allowEmptyString('title', false)
                 ->minLength('title', 10)
@@ -50,10 +53,6 @@ class ArticlesTable extends Table
             ->maxLength('title', 255)
             ->allowEmptyString('body', false)
             ->minLength('body', 10);
-//            ->add('upload', 'custom', [
-//                'rule' => [$this, 'validationImage'],
-//                'message' => 'Image is required'
-//            ]);
         return $validator;
     }
     public function validationImage($check, array $context){
@@ -82,6 +81,7 @@ class ArticlesTable extends Table
         $query = $query
             ->select($columns)
             ->distinct($columns);
+   
 
         if (empty($options['tags'])) {
             // If there are no tags provided, find articles that have no tags.
@@ -94,9 +94,16 @@ class ArticlesTable extends Table
         }
         return $query->group(['Articles.id']);
     }
-    
+     public function findPublished(Query $query, array $options)
+    {
+        $query->where([
+            $this->alias() . '.published' => 1
+        ]);
+        return $query;
+    }
     protected function _buildTags($tagString)
     {
+         
         // Trim tags
         $newTags = array_map('trim', explode(',', $tagString));
         // Remove all empty tags
